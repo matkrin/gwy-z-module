@@ -1,3 +1,52 @@
+# gwy-z-module
+
+On Arch, first install gwyddion from the AUR.
+This should install all relevant packages.
+
+Create build files with:
+```bash
+./autogen.sh
+```
+
+Then you can run
+```bash
+./configure --with-dest=home && make && make install
+```
+to install in `$HOME/.gwyddion/modules/process`
+
+
+
+On Ubuntu 22.04 I had success with installing the following dependecies:
+```bash
+sudo apt install gwyddion gwyddion-devel libgwyddion-dev libgwyddion20-dev gtk+2.0 libgtk2.0-dev fftw3-dev libgtkglext1-dev
+```
+
+## Docker
+
+Build the image from the Dockerfile:
+```bash
+sudo docker build -t <tag-name> .
+```
+
+Run container interactively:
+```bash
+sudo docker run -it <tag-name>
+```
+
+### LSP support
+
+For clangd support create compile_commands.json with [bear]:
+
+```bash
+make clean && make distclean
+./configure --with-dest=home
+bear -- make
+```
+
+[bear]: https://github.com/rizsotto/Bear
+
+
+---
 
 This is an example of standalone Gwyddion module.
 
