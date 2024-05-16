@@ -22,3 +22,5 @@ stamp-h1
 .libs/
 z-module.la
 z-module.lo
+
+dist/
