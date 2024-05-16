@@ -24,3 +24,4 @@ z-module.la
 z-module.lo
 
 dist/
+.cache

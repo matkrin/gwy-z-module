@@ -390,19 +390,29 @@ static void folder_overview(GwyContainer *data, GwyRunType run, G_GNUC_UNUSED co
 static void dirname(const char *path, char *dir) {
     size_t len = strlen(path);
 
+    // If the path is empty, return the current directory "."
     if (len == 0) {
         strcpy(dir, ".");
         return;
     }
 
-    const char* last_slash = strrchr(path, '/');
+    // Find the last occurrence of either slash '/' or backslash '\'
+    const char *last_fwd_slash = strrchr(path, '/');
+    const char *last_bck_slash = strrchr(path, '\\');
+    const char *last_slash = last_fwd_slash > last_bck_slash ? last_fwd_slash : last_bck_slash;
 
-    if (!last_slash || last_slash == path) {
-        strcpy(dir, ".");
+    // Handle the cases:
+    // 1. No slash found
+    // 2. The path is just a single slash or backslash
+    if (!last_slash || last_slash == path || last_slash == path + 1) {
+        strcpy(dir, last_slash == path || last_slash == path + 1 ? "\\" : ".");
         return;
     }
 
+    // Calculate the length of the directory part
     size_t dir_len = last_slash - path;
+
+    // Copy the directory part to the output buffer
     strncpy(dir, path, dir_len);
     dir[dir_len] = '\0';
 }
@@ -410,17 +420,24 @@ static void dirname(const char *path, char *dir) {
 static void basename(const char* path, char* base) {
     size_t len = strlen(path);
 
+    // If the path is empty, return the current directory "."
     if (len == 0) {
         strcpy(base, ".");
         return;
     }
 
-    const char* last_slash = strrchr(path, '/');
+    // Find the last occurrence of either slash '/' or backslash '\'
+    const char* last_fwd_slash = strrchr(path, '/');
+    const char* last_bck_slash = strrchr(path, '\\');
+    const char* last_slash = last_fwd_slash > last_bck_slash ? last_fwd_slash : last_bck_slash;
+
+    // If no slash is found, the entire path is the basename
     if (!last_slash) {
         strcpy(base, path);
         return;
     }
-    // Move past the last slash
+
+    // Move past the last slash to get the basename
     strcpy(base, last_slash + 1);
 }
 
@@ -439,8 +456,13 @@ char* concat_path(const char* dir, const char* filename, char* fullpath) {
     strcpy(fullpath, dir);
 
     size_t len = strlen(fullpath);
-    if (fullpath[len - 1] != '/') {
-        strcat(fullpath, "/");
+    // Determine the appropriate separator based on the directory path
+    char separator = (strchr(dir, '\\') != NULL) ? '\\' : '/';
+
+    // Add the separator if it's not already at the end of the directory path
+    if (fullpath[len - 1] != '/' && fullpath[len - 1] != '\\') {
+        fullpath[len] = separator;
+        fullpath[len + 1] = '\0';
     }
 
     strcat(fullpath, filename);
