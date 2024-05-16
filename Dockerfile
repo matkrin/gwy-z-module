@@ -1,12 +1,15 @@
-FROM fedora:39
+FROM fedora:36
 
 RUN dnf update -y
-RUN dnf install -y @development-tools
+RUN dnf install -y @development-tools autoconf automake libtool 'dnf-command(config-manager)'
 
-RUN mkdir gwy-modules
+RUN dnf install -y mingw{32,64}-{gcc-c++,gtk2,libxml2,minizip,fftw,libwebp,OpenEXR}
 
-COPY . gwy-modules
-WORKDIR "/gwy-modules"
+RUN mkdir gwy-z-module
 
-RUN dnf install -y gwyddion-release-39-1.fc39.noarch.rpm
-RUN dnf install -y gwyddion-devel
+COPY . gwy-z-module
+WORKDIR "/gwy-z-module"
+
+RUN dnf install -y ./gwyddion-release-36-1.fc36.noarch.rpm
+RUN dnf config-manager --set-enabled gwyddion-mingw
+RUN dnf install -y gwyddion-devel mingw32-gwyddion-libs
