@@ -33,6 +33,12 @@ Run container interactively:
 sudo docker run -it <tag-name>
 ```
 
+In container:
+```bash
+make clean && make distclean
+./configure CFLAGS='-fstack-protector' --host=i686-w64-mingw32 --build=$(/usr/share/libtool/config/config.guess) PKG_CONFIG_PATH=/usr/i686-w64-mingw32/sys-root/mingw/lib --with-dest="/gwy-z-module/dist"
+```
+
 ### LSP support
 
 For clangd support create compile_commands.json with [bear]:
