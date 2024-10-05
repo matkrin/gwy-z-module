@@ -1,5 +1,27 @@
 # gwy-z-module
 
+This is an extension module for [Gwyddion](http://gwyddion.net/) that enables
+the following additional processing functions for .mul files, that can be found
+in the menu under _Data Process_ -> _Zzz_:
+
+- Level All: Apply _Plane Level_ for all images in the current containter (Data
+  Browser entry)
+- Container Overview: Creates an alternative data browser of the current
+  container with larger thumbnails and leveled images
+- Folder Overview: Creates an alternative databrowser containing images from all
+  files that are located in the same directory as the currently open one (not
+  optimized for a directories containing a large amount of files)
+- Focus Main Window: Brings the main window into foreground and focuses it (only
+  useful if you define a
+  [keyboard shortcut](http://gwyddion.net/documentation/user-guide-en/keyboard-shortcuts.html)
+  for it)
+- Drift Correction: Not implemented
+
+
+## Build
+
+### Arch
+
 On Arch, first install gwyddion from the AUR.
 This should install all relevant packages.
 
@@ -15,31 +37,34 @@ Then you can run
 to install in `$HOME/.gwyddion/modules/process`
 
 
+### Ubuntu
 
 On Ubuntu 22.04 I had success with installing the following dependecies:
 ```bash
 sudo apt install gwyddion gwyddion-devel libgwyddion-dev libgwyddion20-dev gtk+2.0 libgtk2.0-dev fftw3-dev libgtkglext1-dev
 ```
 
-## Docker
+
+### Cross-Compilation with Docker
 
 Build the image from the Dockerfile:
 ```bash
-sudo docker build -t <tag-name> .
+docker build -t <tag-name> .
 ```
 
 Run container interactively:
 ```bash
-sudo docker run -it <tag-name>
+docker run -it <tag-name>
 ```
 
-In container:
+In the container run:
 ```bash
 make clean && make distclean
 ./configure CFLAGS='-fstack-protector' --host=i686-w64-mingw32 --build=$(/usr/share/libtool/config/config.guess) PKG_CONFIG_PATH=/usr/i686-w64-mingw32/sys-root/mingw/lib --with-dest="/gwy-z-module/dist"
 ```
 
-### LSP support
+
+## LSP support
 
 For clangd support create compile_commands.json with [bear]:
 
@@ -52,7 +77,8 @@ bear -- make
 [bear]: https://github.com/rizsotto/Bear
 
 
----
+<details>
+<summary>Template README</summary>
 
 This is an example of standalone Gwyddion module.
 
@@ -155,4 +181,4 @@ See the top of configure.ac and Makefile.am for notes about things you will
 probably need to modify if you start developing your own module based on
 threshold-example.
 
-
+</details>
